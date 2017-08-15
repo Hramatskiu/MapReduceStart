@@ -12,10 +12,16 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class HbaseTaskApp {
     public static void main(String[] args) throws Exception{
         Configuration config = createConfig();
+        HBaseAdmin.checkHBaseAvailable(config);
+
+        List<String> names = getTableNamesList(config);
 
         setUpHbaseTable(config, "sourcetest", "somefamily");
         setUpHbaseTable(config, "desttest", "cpcount");
@@ -30,6 +36,13 @@ public class HbaseTaskApp {
     private static Configuration createConfig(){
         Configuration config = HBaseConfiguration.create();
         config.set("hbase.zookeeper.quorum", "svqxbdcn6hdp25n1.pentahoqa.com:2181");
+        config.set("hbase.master", "svqxbdcn6hdp25n1.pentahoqa.com:16000");
+        config.set("hbase.rootdir", "hdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020/apps/hbase/data");
+        config.set("hbase.regionserver.info.port", "16030");
+        config.set("hbase.regionserver.port", "16020");
+        config.set("zookeeper.znode.parent", "/hbase-unsecure");
+        config.set("hbase.security.authorization", "false");
+        config.set("hbase.bulkload.staging.dir", "/apps/hbase/staging");
 
         return config;
     }
@@ -78,5 +91,20 @@ public class HbaseTaskApp {
         catch (IOException ex){
             //logging
         }
+    }
+
+    private static List<String> getTableNamesList(Configuration configuration) {
+        try(Connection connection = ConnectionFactory.createConnection(configuration)) {
+            return getTableNamesList(connection);
+        }
+        catch (IOException ex){
+            //logging
+        }
+
+        return null;
+    }
+
+    private static List<String> getTableNamesList(Connection connection) throws IOException{
+        return Arrays.stream(connection.getAdmin().listTableNames()).map(TableName::toString).collect(Collectors.toList());
     }
 }
