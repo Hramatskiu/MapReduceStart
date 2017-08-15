@@ -5,7 +5,6 @@ import org.apache.hadoop.fs.*;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.apache.hadoop.hdfs.protocol.CachePoolEntry;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
-import org.apache.hadoop.hdfs.web.HftpFileSystem;
 import org.apache.hadoop.hdfs.web.WebHdfsFileSystem;
 
 import java.io.IOException;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HdfsTaskApp {
-    private static final String HDFS_URL = "hdfs://admin:admin@svqxbdcn6hdp25n1.pentahoqa.com:8020";
+    private static final String HDFS_URL = "hdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020";
     private static final String WEB_HDFS_URL = "webhdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020";
 
     public static void main(String[] args) {
@@ -37,7 +36,10 @@ public class HdfsTaskApp {
 
         configuration.set("fs.default.name", WEB_HDFS_URL);
         try(WebHdfsFileSystem fileSystem = (WebHdfsFileSystem) FileSystem.get(configuration)) {
-            FileStatus fileStatus = getWithRestApi("/wordcount/task/input.txt", fileSystem);
+            //FileStatus fileStatus = getWithRestApi("/wordcount/task/input.txt", fileSystem);
+            //FsStatus status = fileSystem.getStatus();
+            FileStatus[] fileStatuses = fileSystem.listStatus(new Path("/"));
+            //System.out.println(status);
         }
         catch (IOException ex){
             System.out.println(ex.getMessage());
@@ -90,5 +92,9 @@ public class HdfsTaskApp {
 
     private static FileStatus getWithRestApi(String filePath, WebHdfsFileSystem fileSystem) throws IOException{
         return fileSystem.getFileStatus(new Path(filePath));
+    }
+
+    private static void readFromPosWithRestApi(String filePath, WebHdfsFileSystem fileSystem) throws IOException{
+        fileSystem.createNewFile(new Path(filePath));
     }
 }

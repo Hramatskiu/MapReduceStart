@@ -1,5 +1,7 @@
 package com.epam.mapreduce.wordcount;
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
@@ -11,46 +13,36 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
+import java.security.PrivilegedExceptionAction;
 import java.util.stream.StreamSupport;
 
-public class WordCountApp {
-    private static final Logger logger = LogManager.getLogger(WordCountApp.class);
+public class WordCountApp extends Configured implements Tool {
     public static void main(String[] args) throws Exception{
-        try{
-            Job job = createJob(new JobConf(), WordCountMapper.class, WordCountReducer.class);
-
-            setUpInputOutputConfigs(job, "/wordcount/input/fortest.txt", "/wordcount/task/output.txt");
-
-            job.waitForCompletion(true);
-
-        }
-        catch (ArrayIndexOutOfBoundsException | IOException | ClassNotFoundException | InterruptedException ex){
-            //logging
-            //logger.log(Level.ERROR, ex.getMessage());
-            System.out.println(ex.getMessage());
-        }
+        int res = ToolRunner.run(new Configuration(), new WordCountApp(), args);
+        System.exit(res);
     }
 
     private static Job createJob(JobConf configuration, Class<? extends Mapper> mapperClass, Class<? extends Reducer> reducerClass) throws IOException{
-        configuration.set("fs.default.name", "hdfs://admin:admin@svqxbdcn6hdp25n1.pentahoqa.com:8020");
-        configuration.set("mapred.job.tracker", "svqxbdcn6hdp25n1.pentahoqa.com:8020");
+        /*configuration.set("fs.default.name", "hdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020");
+        configuration.set("mapred.job.tracker", "svqxbdcn6hdp25n1.pentahoqa.com:8020");*/
 
-        /*configuration.set("yarn.resourcemanager.address", "svqxbdcn6hdp25n2.pentahoqa.com:8050");
+        configuration.set("yarn.resourcemanager.address", "svqxbdcn6hdp25n2.pentahoqa.com:8050");
         configuration.set("mapreduce.framework.name", "yarn");
         configuration.set("fs.defaultFS", "hdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020/");
        /* configuration.set(MRJobConfig.MAPREDUCE_APPLICATION_CLASSPATH, "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,"
                 + "$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,"
                 + "$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,"
-                + "$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*");
+                + "$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*");*/
         configuration.set("yarn.application.classpath",
                 "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,"
                         + "$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,"
                         + "$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,"
-                        + "$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*");*/
+                        + "$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*");
+        configuration.set("yarn.app.mapreduce.am.staging-dir", "user");
 
         Job job = new Job(configuration);
 
@@ -73,6 +65,24 @@ public class WordCountApp {
         FileOutputFormat.setOutputPath(job, new Path(outputPath));
     }
 
+    @Override
+    public int run(String[] strings) throws Exception {
+        try{
+            Job job = createJob(new JobConf(), WordCountMapper.class, WordCountReducer.class);
+
+            setUpInputOutputConfigs(job, "/wordcount/input/fortest.txt", "/wordcount/output/output1.txt");
+
+            return job.waitForCompletion(true) ? 1 : 0;
+        }
+        catch (ArrayIndexOutOfBoundsException | IOException | InterruptedException ex){
+            //logging
+            //logger.log(Level.ERROR, ex.getMessage());
+            System.out.println(ex.getMessage());
+        }
+
+        return 0;
+    }
+
     public static class WordCountMapper extends Mapper<Object, Text, Text, IntWritable> {
         private String spaceRegex = "\\s+";
         private String punctRegex = "\\p{Punct}";
@@ -83,6 +93,7 @@ public class WordCountApp {
             String[] separatedWords = value.toString().trim().toUpperCase().replaceAll(punctRegex, " ").split(spaceRegex);
 
             for (String separatedWord : separatedWords) {
+                System.out.println(separatedWord);
                 writeValueToContext(separatedWord, context);
             }
         }
