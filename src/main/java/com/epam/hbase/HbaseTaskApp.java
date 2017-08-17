@@ -1,5 +1,10 @@
 package com.epam.hbase;
 
+import com.epam.hbase.job.HBaseJobCreator;
+import com.epam.hbase.job.HBaseMapper;
+import com.epam.hbase.job.HBaseReducer;
+import com.epam.hbase.wrapper.HTableHandlerWrapper;
+import com.google.protobuf.ServiceException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HColumnDescriptor;
@@ -7,6 +12,7 @@ import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -14,97 +20,79 @@ import org.apache.hadoop.mapreduce.Job;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NavigableMap;
 import java.util.stream.Collectors;
 
 public class HbaseTaskApp {
+    private static HBaseConnectionPool hBaseConnectionPool;
+
     public static void main(String[] args) throws Exception{
+        setUpPool();
+        HTableHandlerWrapper hTableHandlerWrapper = new HTableHandlerWrapper(hBaseConnectionPool);
+
+        hTableHandlerWrapper.addFamilyToTable("sourcetest", "awesomefamily");
+        List<String> names = getTableNamesList(hTableHandlerWrapper);
+
+        /*setUpHbaseTable(config, "sourcetest", "somefamily");
+        setUpHbaseTable(config, "desttest", "cpcount");*/
+
+        initTableData(hTableHandlerWrapper, "sourcetest");
+
+        NavigableMap<byte[], byte[]> familyMap = hTableHandlerWrapper.getFamilyMap("sourcetest", "some", "somefamily");
+        for (byte[] key: familyMap.navigableKeySet()) {
+            System.out.println(Bytes.toString(key) + " : " + Bytes.toString(familyMap.get(key)));
+        }
+
+        ResultScanner results = hTableHandlerWrapper.getResultScanner("sourcetest", "somefamily", "qual");
+
+        /*if (results != null){
+            System.out.println(results.next());
+        }*/
+
+        List<String> families = hTableHandlerWrapper.getTableFamilies("sourcetest");
+
+        if (families != null) {
+            families.forEach(System.out::println);
+        }
+
+        Job job = HBaseJobCreator.createJob(createConfig(), "Test",  HBaseQueryHelper.createScan(500, false),"sourcetest", "desttest");
+
+        job.waitForCompletion(true);
+
+        /*hTableHandlerWrapper.dropTable("sourcetest");
+        hTableHandlerWrapper.dropTable("desttest");*/
+    }
+
+    private static void setUpPool() throws IOException, ServiceException{
         Configuration config = createConfig();
         HBaseAdmin.checkHBaseAvailable(config);
 
-        List<String> names = getTableNamesList(config);
-
-        setUpHbaseTable(config, "sourcetest", "somefamily");
-        setUpHbaseTable(config, "desttest", "cpcount");
-
-        initTableData(config, "sourcetest");
-
-        Job job = createJob(config, "Test", "sourcetest", "desttest");
-
-        job.waitForCompletion(true);
+        hBaseConnectionPool = new HBaseConnectionPool(5, config);
     }
 
     private static Configuration createConfig(){
         Configuration config = HBaseConfiguration.create();
-        config.set("hbase.zookeeper.quorum", "svqxbdcn6hdp25n1.pentahoqa.com:2181");
-        config.set("hbase.master", "svqxbdcn6hdp25n1.pentahoqa.com:16000");
-        config.set("hbase.rootdir", "hdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020/apps/hbase/data");
-        config.set("hbase.regionserver.info.port", "16030");
-        config.set("hbase.regionserver.port", "16020");
-        config.set("zookeeper.znode.parent", "/hbase-unsecure");
-        config.set("hbase.security.authorization", "false");
-        config.set("hbase.bulkload.staging.dir", "/apps/hbase/staging");
+        config.addResource("hbase-site.xml");
+        config.addResource("core-site.xml");
 
         return config;
     }
 
-    private static Job createJob(Configuration configuration, String jobName, String sourceTable, String destTable) throws IOException{
-        Job job = new Job(configuration,jobName);
-        job.setJarByClass(HbaseTaskApp.class);
-
-        Scan scan = new Scan();
-        scan.setCaching(500);
-        scan.setCacheBlocks(false);
-
-        TableMapReduceUtil.initTableMapperJob(sourceTable, scan, HBaseMapper.class, Text.class, IntWritable.class, job);
-        TableMapReduceUtil.initTableReducerJob(destTable, HBaseReducer.class, job);
-        job.setNumReduceTasks(1);
-
-        return job;
+    private static void setUpHbaseTable(HTableHandlerWrapper hTableHandlerWrapper, String tableName, String familyName){
+        hTableHandlerWrapper.createTable(tableName, familyName);
     }
 
-    private static void setUpHbaseTable(Configuration configuration, String tableName, String familyName){
-        try(Connection connection = ConnectionFactory.createConnection(configuration)) {
-            Admin admin = connection.getAdmin();
-
-            HTableDescriptor tableDescriptor = new HTableDescriptor(TableName.valueOf(tableName));
-            tableDescriptor.addFamily(new HColumnDescriptor(familyName));
-
-            if (!admin.tableExists(tableDescriptor.getTableName())){
-                admin.createTable(tableDescriptor);
-            }
-        }
-        catch (IOException ex){
-            //logging
-        }
+    private static void initTableData(HTableHandlerWrapper hTableHandlerWrapper, String tableName){
+        hTableHandlerWrapper.putDataInTable(tableName,"some", "somefamily", "qual", "test");
+        hTableHandlerWrapper.putDataInTable(tableName, "some", "somefamily", "qualifier", "totest");
+        hTableHandlerWrapper.putDataInTable(tableName, "some", "awesomefamily", "qualifier", "totest");
     }
 
-    private static void initTableData(Configuration configuration, String tableName){
-        setUpTableData(configuration, tableName, "some", "somefamily", "qual", "test");
-        setUpTableData(configuration, tableName, "some", "somefamily", "qual", "totest");
+    private static List<String> getTableNamesList(HTableHandlerWrapper hTableHandlerWrapper) {
+        return hTableHandlerWrapper.getTableNamesList();
     }
 
-    private static void setUpTableData(Configuration configuration, String tableName, String rowName, String familyName, String qualifier, String value){
-        try(Connection connection = ConnectionFactory.createConnection(configuration)) {
-            Table table = connection.getTable(TableName.valueOf(tableName));
-            HBaseUtil.tryToPutData(rowName, familyName, qualifier, value, table);
-        }
-        catch (IOException ex){
-            //logging
-        }
-    }
-
-    private static List<String> getTableNamesList(Configuration configuration) {
-        try(Connection connection = ConnectionFactory.createConnection(configuration)) {
-            return getTableNamesList(connection);
-        }
-        catch (IOException ex){
-            //logging
-        }
-
-        return null;
-    }
-
-    private static List<String> getTableNamesList(Connection connection) throws IOException{
-        return Arrays.stream(connection.getAdmin().listTableNames()).map(TableName::toString).collect(Collectors.toList());
-    }
+    /*private static ResultScanner getResultScanner(Connection connection, String tableName) throws IOException{
+        return connection.getTable(TableName.valueOf(tableName)).getScanner()
+    }*/
 }

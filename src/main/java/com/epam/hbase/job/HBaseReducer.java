@@ -1,4 +1,4 @@
-package com.epam.hbase;
+package com.epam.hbase.job;
 
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;

@@ -18,10 +18,10 @@ public class HdfsTaskApp {
 
     public static void main(String[] args) {
         Configuration configuration = new Configuration();
-        configuration.set("fs.default.name", HDFS_URL);
+        //configuration.set("fs.default.name", HDFS_URL);
 
         try(FileSystem fileSystem = FileSystem.get(configuration)){
-            copyToLocalFile("/wordcount/task/input.txt", "D:/test_data/input.txt", fileSystem);
+            //copyToLocalFile("/wordcount/task/input.txt", "D:/test_data/input.txt", fileSystem);
             //copyFromLocal("D:/test_data/input.txt", "/wordcount/task/input.txt", fileSystem);
             //deleteFile("/wordcount/task/input.txt", fileSystem);
             //FileStatus fileStatus = getFileStatus("/wordcount/task/input.txt", fileSystem);
@@ -34,7 +34,9 @@ public class HdfsTaskApp {
             //logging
         }
 
-        configuration.set("fs.default.name", WEB_HDFS_URL);
+        //configuration.set("fs.default.name", WEB_HDFS_URL);
+        configuration.addResource("hdfs-site.xml");
+        configuration.set("fs.defaultFS", WEB_HDFS_URL);
         try(WebHdfsFileSystem fileSystem = (WebHdfsFileSystem) FileSystem.get(configuration)) {
             //FileStatus fileStatus = getWithRestApi("/wordcount/task/input.txt", fileSystem);
             //FsStatus status = fileSystem.getStatus();

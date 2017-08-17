@@ -30,19 +30,23 @@ public class WordCountApp extends Configured implements Tool {
         /*configuration.set("fs.default.name", "hdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020");
         configuration.set("mapred.job.tracker", "svqxbdcn6hdp25n1.pentahoqa.com:8020");*/
 
-        configuration.set("yarn.resourcemanager.address", "svqxbdcn6hdp25n2.pentahoqa.com:8050");
+        /*configuration.set("yarn.resourcemanager.address", "svqxbdcn6hdp25n2.pentahoqa.com:8050");
         configuration.set("mapreduce.framework.name", "yarn");
         configuration.set("fs.defaultFS", "hdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020/");
        /* configuration.set(MRJobConfig.MAPREDUCE_APPLICATION_CLASSPATH, "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,"
                 + "$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,"
                 + "$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,"
-                + "$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*");*/
+                + "$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*");
         configuration.set("yarn.application.classpath",
-                "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,"
-                        + "$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,"
-                        + "$HADOOP_YARN_HOME/*,$HADOOP_YARN_HOME/lib/*,"
-                        + "$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*");
-        configuration.set("yarn.app.mapreduce.am.staging-dir", "user");
+                "$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/*,$HADOOP_COMMON_HOME/lib/*,$HADOOP_HDFS_HOME/*,$HADOOP_HDFS_HOME/lib/*,$HADOOP_MAPRED_HOME/*,$HADOOP_MAPRED_HOME/lib/*,$YARN_HOME/*,$YARN_HOME/lib/*");
+        //configuration.set("mapreduce.application.classpath", "$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/mapreduce/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/mapreduce/lib/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/common/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/common/lib/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/yarn/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/yarn/lib/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/hdfs/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/hdfs/lib/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/tools/lib/*:/etc/hadoop/conf/secure");
+        configuration.set("yarn.app.mapreduce.am.staging-dir", "/user");
+        configuration.set("mapreduce.app-submission.cross-platform", "true");*/
+        configuration.addResource("core-site.xml");
+        configuration.addResource("mapred-site.xml");
+        configuration.addResource("yarn-site.xml");
+        configuration.addResource("hdfs-site.xml");
+
 
         Job job = new Job(configuration);
 
@@ -72,7 +76,7 @@ public class WordCountApp extends Configured implements Tool {
 
             setUpInputOutputConfigs(job, "/wordcount/input/fortest.txt", "/wordcount/output/output1.txt");
 
-            return job.waitForCompletion(true) ? 1 : 0;
+            return job.waitForCompletion(true) ? 1 : 3;
         }
         catch (ArrayIndexOutOfBoundsException | IOException | InterruptedException ex){
             //logging

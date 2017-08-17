@@ -1,4 +1,4 @@
-package com.epam.hbase;
+package com.epam.hbase.job;
 
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class HBaseMapper extends TableMapper<Text, IntWritable> {
     private final IntWritable one = new IntWritable(1);
-    private Text text;
+    private Text text = new Text();
 
     @Override
     protected void map(ImmutableBytesWritable key, Result value, Context context) throws IOException, InterruptedException {
