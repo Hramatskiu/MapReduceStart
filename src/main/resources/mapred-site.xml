@@ -26,11 +26,6 @@
     </property>
     
     <property>
-      <name>mapreduce.application.framework.path</name>
-      <value>/hdp/apps/${hdp.version}/mapreduce/mapreduce.tar.gz#mr-framework</value>
-    </property>
-    
-    <property>
       <name>mapreduce.cluster.administrators</name>
       <value> hadoop</value>
     </property>

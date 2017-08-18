@@ -42,8 +42,8 @@ public class WordCountApp extends Configured implements Tool {
         //configuration.set("mapreduce.application.classpath", "$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/mapreduce/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/mapreduce/lib/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/common/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/common/lib/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/yarn/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/yarn/lib/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/hdfs/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/hdfs/lib/*:$PWD/hdp/apps/2.5.0.0-1245 /mapreduce/mapreduce.tar.gz/hadoop/share/hadoop/tools/lib/*:/etc/hadoop/conf/secure");
         configuration.set("yarn.app.mapreduce.am.staging-dir", "/user");
         configuration.set("mapreduce.app-submission.cross-platform", "true");*/
-        configuration.addResource("core-site.xml");
-        configuration.addResource("mapred-site.xml");
+        //configuration.addResource("core-site.xml");
+        //configuration.addResource("mapred-site.xml");
         configuration.addResource("yarn-site.xml");
         configuration.addResource("hdfs-site.xml");
 
