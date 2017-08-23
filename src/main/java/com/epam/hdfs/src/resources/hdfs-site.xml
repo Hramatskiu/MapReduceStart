@@ -4,7 +4,7 @@
 <configuration>
   <property>
     <name>dfs.namenode.name.dir</name>
-    <value>file:///dfs/nn</value>
+    <value>hdfs:///dfs/nn</value>
   </property>
   <property>
     <name>dfs.namenode.servicerpc-address</name>

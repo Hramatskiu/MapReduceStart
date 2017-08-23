@@ -182,8 +182,4 @@
     <name>mapreduce.cluster.acls.enabled</name>
     <value>false</value>
   </property>
-  <property>
-    <name>mapreduce.app-submission.cross-platform</name>
-    <value>true</value>
-  </property>
 </configuration>
