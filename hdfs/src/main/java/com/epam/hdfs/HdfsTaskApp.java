@@ -1,5 +1,6 @@
 package com.epam.hdfs;
 
+import com.epam.kerberos.HadoopKerberosUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -7,32 +8,33 @@ import org.apache.hadoop.hdfs.protocol.CachePoolEntry;
 import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.web.WebHdfsFileSystem;
 
+import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class HdfsTaskApp {
-    private static final String HDFS_URL = "hdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020";
+    private static final String HDFS_URL = "hdfs://svqxbdcn6hdp25secn1.pentahoqa.com:8020";
     private static final String WEB_HDFS_URL = "webhdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020";
 
     public static void main(String[] args) {
-        Configuration configuration = new Configuration();
-        configuration.set("fs.defaultFS", "hdfs://svqxbdcn6cdh512n1.pentahoqa.com:8020");
-        //configuration.set("hadoop.job.ugi", "cloudera");
-        configuration.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
-        configuration.addResource("yarn-site.xml");
-        configuration.addResource("hdfs-site.xml");
-        configuration.addResource("core-site.xml");
-        configuration.addResource("mapred-site.xml");
-        configuration.addResource("ssl-client.xml");
+        Configuration configuration = createConfig();
+        try {
+            HadoopKerberosUtil.doLogin("devuser@PENTAHOQA.COM", "password");
+        } catch (LoginException | IOException e) {
+            e.printStackTrace();
+        }
 
         try(FileSystem fileSystem = FileSystem.get(configuration)){
             //copyToLocalFile("/wordcount/input/pg20417.txt", "D:/test_data/input.txt", fileSystem);
-            copyFromLocal("D:/test_data/input.txt", "/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
+            //copyFromLocal("D:/test_data/input.txt", "/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
             //deleteFile("/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
+            /*fileSystem.mkdirs(new Path("/wordcount/test"));
+            copyFromLocal("D:/test_data/input.txt", "/wordcount/test/test.txt", fileSystem);*/
             //FileStatus fileStatus = getFileStatus("/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
-            //List<String> hostNames = getDataNodesHostNames(fileSystem);
+            List<String> hostNames = getDataNodesHostNames(fileSystem);
+            hostNames.forEach(System.out::println);
             //FSDataInputStream inputStream = readFile("/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
 
             //copyToLocalFile(args[0], args[1], fileSystem);
@@ -54,6 +56,17 @@ public class HdfsTaskApp {
             System.out.println(ex.getMessage());
             //logging
         }*/
+    }
+
+    private static Configuration createConfig(){
+        Configuration configuration = new Configuration();
+        configuration.set("fs.defaultFS", HDFS_URL);
+        //configuration.set("hadoop.job.ugi", "cloudera");
+        configuration.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+        configuration.addResource("hdfs-site.xml");
+        configuration.addResource("core-site.xml");
+
+        return configuration;
     }
 
     private static void copyToLocalFile(String source, String dest, FileSystem fileSystem) throws IOException{

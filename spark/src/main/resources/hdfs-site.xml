@@ -16,11 +16,6 @@
     </property>
     
     <property>
-      <name>dfs.client.failover.proxy.provider.HDP25Secure</name>
-      <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
-    </property>
-    
-    <property>
       <name>dfs.client.read.shortcircuit</name>
       <value>true</value>
     </property>
@@ -47,7 +42,7 @@
     
     <property>
       <name>dfs.datanode.address</name>
-      <value>0.0.0.0:1019</value>
+      <value>0.0.0.0:50010</value>
     </property>
     
     <property>
@@ -79,7 +74,7 @@
     
     <property>
       <name>dfs.datanode.http.address</name>
-      <value>0.0.0.0:1022</value>
+      <value>0.0.0.0:50075</value>
     </property>
     
     <property>
@@ -90,16 +85,6 @@
     <property>
       <name>dfs.datanode.ipc.address</name>
       <value>0.0.0.0:8010</value>
-    </property>
-    
-    <property>
-      <name>dfs.datanode.kerberos.principal</name>
-      <value>dn/_HOST@PENTAHOQA.COM</value>
-    </property>
-    
-    <property>
-      <name>dfs.datanode.keytab.file</name>
-      <value>/etc/security/keytabs/dn.service.keytab</value>
     </property>
     
     <property>
@@ -115,21 +100,6 @@
     <property>
       <name>dfs.encrypt.data.transfer.cipher.suites</name>
       <value>AES/CTR/NoPadding</value>
-    </property>
-    
-    <property>
-      <name>dfs.ha.automatic-failover.enabled</name>
-      <value>true</value>
-    </property>
-    
-    <property>
-      <name>dfs.ha.fencing.methods</name>
-      <value>shell(/bin/true)</value>
-    </property>
-    
-    <property>
-      <name>dfs.ha.namenodes.HDP25Secure</name>
-      <value>nn1,nn2</value>
     </property>
     
     <property>
@@ -153,13 +123,8 @@
     </property>
     
     <property>
-      <name>dfs.internal.nameservices</name>
-      <value>HDP25Secure</value>
-    </property>
-    
-    <property>
       <name>dfs.journalnode.edits.dir</name>
-      <value>/hadoop/hdfs/journal</value>
+      <value>/hadoop/hdfs/journalnode</value>
     </property>
     
     <property>
@@ -170,21 +135,6 @@
     <property>
       <name>dfs.journalnode.https-address</name>
       <value>0.0.0.0:8481</value>
-    </property>
-    
-    <property>
-      <name>dfs.journalnode.kerberos.internal.spnego.principal</name>
-      <value>HTTP/_HOST@PENTAHOQA.COM</value>
-    </property>
-    
-    <property>
-      <name>dfs.journalnode.kerberos.principal</name>
-      <value>jn/_HOST@PENTAHOQA.COM</value>
-    </property>
-    
-    <property>
-      <name>dfs.journalnode.keytab.file</name>
-      <value>/etc/security/keytabs/jn.service.keytab</value>
     </property>
     
     <property>
@@ -238,38 +188,14 @@
     </property>
     
     <property>
-      <name>dfs.namenode.http-address.HDP25Secure.nn1</name>
-      <value>svqxbdcn6hdp25secn1.pentahoqa.com:50070</value>
+      <name>dfs.namenode.http-address</name>
+      <value>svqxbdcn6hdp25n1.pentahoqa.com:50070</value>
+      <final>true</final>
     </property>
     
     <property>
-      <name>dfs.namenode.http-address.HDP25Secure.nn2</name>
-      <value>svqxbdcn6hdp25secn2.pentahoqa.com:50070</value>
-    </property>
-    
-    <property>
-      <name>dfs.namenode.https-address.HDP25Secure.nn1</name>
-      <value>svqxbdcn6hdp25secn1.pentahoqa.com:50470</value>
-    </property>
-    
-    <property>
-      <name>dfs.namenode.https-address.HDP25Secure.nn2</name>
-      <value>svqxbdcn6hdp25secn2.pentahoqa.com:50470</value>
-    </property>
-    
-    <property>
-      <name>dfs.namenode.kerberos.internal.spnego.principal</name>
-      <value>HTTP/_HOST@PENTAHOQA.COM</value>
-    </property>
-    
-    <property>
-      <name>dfs.namenode.kerberos.principal</name>
-      <value>nn/_HOST@PENTAHOQA.COM</value>
-    </property>
-    
-    <property>
-      <name>dfs.namenode.keytab.file</name>
-      <value>/etc/security/keytabs/nn.service.keytab</value>
+      <name>dfs.namenode.https-address</name>
+      <value>svqxbdcn6hdp25n1.pentahoqa.com:50470</value>
     </property>
     
     <property>
@@ -284,23 +210,18 @@
     </property>
     
     <property>
-      <name>dfs.namenode.rpc-address.HDP25Secure.nn1</name>
-      <value>svqxbdcn6hdp25secn1.pentahoqa.com:8020</value>
-    </property>
-    
-    <property>
-      <name>dfs.namenode.rpc-address.HDP25Secure.nn2</name>
-      <value>svqxbdcn6hdp25secn2.pentahoqa.com:8020</value>
+      <name>dfs.namenode.rpc-address</name>
+      <value>svqxbdcn6hdp25n1.pentahoqa.com:8020</value>
     </property>
     
     <property>
       <name>dfs.namenode.safemode.threshold-pct</name>
-      <value>0.99</value>
+      <value>1</value>
     </property>
     
     <property>
-      <name>dfs.namenode.shared.edits.dir</name>
-      <value>qjournal://svqxbdcn6hdp25secn2.pentahoqa.com:8485;svqxbdcn6hdp25secn1.pentahoqa.com:8485;svqxbdcn6hdp25secn3.pentahoqa.com:8485/HDP25Secure</value>
+      <name>dfs.namenode.secondary.http-address</name>
+      <value>svqxbdcn6hdp25n2.pentahoqa.com:50090</value>
     </property>
     
     <property>
@@ -316,11 +237,6 @@
     <property>
       <name>dfs.namenode.write.stale.datanode.ratio</name>
       <value>1.0f</value>
-    </property>
-    
-    <property>
-      <name>dfs.nameservices</name>
-      <value>HDP25Secure</value>
     </property>
     
     <property>
@@ -344,29 +260,9 @@
     </property>
     
     <property>
-      <name>dfs.secondary.namenode.kerberos.principal</name>
-      <value>nn/_HOST@PENTAHOQA.COM</value>
-    </property>
-    
-    <property>
-      <name>dfs.secondary.namenode.keytab.file</name>
-      <value>/etc/security/keytabs/nn.service.keytab</value>
-    </property>
-    
-    <property>
       <name>dfs.support.append</name>
       <value>true</value>
       <final>true</final>
-    </property>
-    
-    <property>
-      <name>dfs.web.authentication.kerberos.keytab</name>
-      <value>/etc/security/keytabs/spnego.service.keytab</value>
-    </property>
-    
-    <property>
-      <name>dfs.web.authentication.kerberos.principal</name>
-      <value>HTTP/_HOST@PENTAHOQA.COM</value>
     </property>
     
     <property>
@@ -377,7 +273,7 @@
     
     <property>
       <name>fs.permissions.umask-mode</name>
-      <value>022</value>
+      <value>000</value>
     </property>
     
     <property>
