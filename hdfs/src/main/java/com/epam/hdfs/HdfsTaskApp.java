@@ -9,7 +9,9 @@ import org.apache.hadoop.hdfs.protocol.DatanodeInfo;
 import org.apache.hadoop.hdfs.web.WebHdfsFileSystem;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,8 +32,8 @@ public class HdfsTaskApp {
             //copyToLocalFile("/wordcount/input/pg20417.txt", "D:/test_data/input.txt", fileSystem);
             //copyFromLocal("D:/test_data/input.txt", "/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
             //deleteFile("/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
-            /*fileSystem.mkdirs(new Path("/wordcount/test"));
-            copyFromLocal("D:/test_data/input.txt", "/wordcount/test/test.txt", fileSystem);*/
+            fileSystem.mkdirs(new Path("/wordcount/test"));
+            copyFromLocal("D:/test_data/input.txt", "/wordcount/test/test.txt", fileSystem);
             //FileStatus fileStatus = getFileStatus("/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
             List<String> hostNames = getDataNodesHostNames(fileSystem);
             hostNames.forEach(System.out::println);
