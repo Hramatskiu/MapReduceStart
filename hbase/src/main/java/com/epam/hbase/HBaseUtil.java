@@ -14,7 +14,8 @@ import java.util.NavigableMap;
 import java.util.stream.Collectors;
 
 public class HBaseUtil {
-    private HBaseUtil(){ }
+  private HBaseUtil() {
+  }
 
 
 }

@@ -11,48 +11,52 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HBaseQueryHelper {
-    private HBaseQueryHelper(){ }
+  private HBaseQueryHelper() {
+  }
 
-    public static void tryToPutData(String rowName, String familyName, String qualifier, String value, Table table) throws IOException {
-        table.put(createPutSentenceAddColumn(rowName, familyName, qualifier, value));
-    }
+  public static void tryToPutData( String rowName, String familyName, String qualifier, String value, Table table )
+    throws IOException {
+    table.put( createPutSentenceAddColumn( rowName, familyName, qualifier, value ) );
+  }
 
-    public static Get createGetSentenceForColumn(String rowName, String familyName, String qualifier){
-        Get getSentence = new Get(Bytes.toBytes(rowName));
-        return getSentence.addColumn(Bytes.toBytes(familyName), Bytes.toBytes(qualifier));
-    }
+  public static Get createGetSentenceForColumn( String rowName, String familyName, String qualifier ) {
+    Get getSentence = new Get( Bytes.toBytes( rowName ) );
+    return getSentence.addColumn( Bytes.toBytes( familyName ), Bytes.toBytes( qualifier ) );
+  }
 
-    private static Put createPutSentenceAddColumn(String rowName, String familyName, String qualifier, String value){
-        Put putSentence = new Put(Bytes.toBytes(rowName));
-        putSentence.addColumn(Bytes.toBytes(familyName), Bytes.toBytes(qualifier), Bytes.toBytes(value));
+  private static Put createPutSentenceAddColumn( String rowName, String familyName, String qualifier, String value ) {
+    Put putSentence = new Put( Bytes.toBytes( rowName ) );
+    putSentence.addColumn( Bytes.toBytes( familyName ), Bytes.toBytes( qualifier ), Bytes.toBytes( value ) );
 
-        return putSentence;
-    }
+    return putSentence;
+  }
 
-    public static Get createGetSentence(String rowName){
-        return new Get(Bytes.toBytes(rowName));
-    }
+  public static Get createGetSentence( String rowName ) {
+    return new Get( Bytes.toBytes( rowName ) );
+  }
 
-    public static Scan createScan(int caching, boolean isCacheBlocks){
-        Scan scan = new Scan();
-        scan.setCaching(caching);
-        scan.setCacheBlocks(isCacheBlocks);
+  public static Scan createScan( int caching, boolean isCacheBlocks ) {
+    Scan scan = new Scan();
+    scan.setCaching( caching );
+    scan.setCacheBlocks( isCacheBlocks );
 
-        return scan;
-    }
+    return scan;
+  }
 
-    public static Scan createScanForColumn(String familyName, String qualifierName){
-        Map<String, String> familyQualifierMap = new HashMap<>();
-        familyQualifierMap.put(familyName, qualifierName);
+  public static Scan createScanForColumn( String familyName, String qualifierName ) {
+    Map<String, String> familyQualifierMap = new HashMap<>();
+    familyQualifierMap.put( familyName, qualifierName );
 
-        return createScanForColumns(familyQualifierMap);
-    }
+    return createScanForColumns( familyQualifierMap );
+  }
 
-    public static Scan createScanForColumns(Map<String, String> familyQualifierMap){
-        Scan scan = new Scan();
+  public static Scan createScanForColumns( Map<String, String> familyQualifierMap ) {
+    Scan scan = new Scan();
 
-        familyQualifierMap.forEach((family, qualifier) -> {scan.addColumn(Bytes.toBytes(family), Bytes.toBytes(qualifier));});
+    familyQualifierMap.forEach( ( family, qualifier ) -> {
+      scan.addColumn( Bytes.toBytes( family ), Bytes.toBytes( qualifier ) );
+    } );
 
-        return scan;
-    }
+    return scan;
+  }
 }

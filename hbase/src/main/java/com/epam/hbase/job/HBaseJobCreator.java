@@ -11,16 +11,18 @@ import org.apache.hadoop.mapreduce.Job;
 import java.io.IOException;
 
 public class HBaseJobCreator {
-    private HBaseJobCreator(){}
+  private HBaseJobCreator() {
+  }
 
-    public static Job createJob(Configuration configuration, String jobName, Scan scan, String sourceTable, String destTable) throws IOException {
-        Job job = new Job(configuration,jobName);
-        job.setJarByClass(HbaseTaskApp.class);
+  public static Job createJob( Configuration configuration, String jobName, Scan scan, String sourceTable,
+                               String destTable ) throws IOException {
+    Job job = new Job( configuration, jobName );
+    job.setJarByClass( HbaseTaskApp.class );
 
-        TableMapReduceUtil.initTableMapperJob(sourceTable, scan, HBaseMapper.class, Text.class, IntWritable.class, job);
-        TableMapReduceUtil.initTableReducerJob(destTable, HBaseReducer.class, job);
-        job.setNumReduceTasks(1);
+    TableMapReduceUtil.initTableMapperJob( sourceTable, scan, HBaseMapper.class, Text.class, IntWritable.class, job );
+    TableMapReduceUtil.initTableReducerJob( destTable, HBaseReducer.class, job );
+    job.setNumReduceTasks( 1 );
 
-        return job;
-    }
+    return job;
+  }
 }

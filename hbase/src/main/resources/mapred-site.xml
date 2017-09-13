@@ -172,11 +172,11 @@
   </property>
   <property>
     <name>mapreduce.job.acl-view-job</name>
-    <value> </value>
+    <value></value>
   </property>
   <property>
     <name>mapreduce.job.acl-modify-job</name>
-    <value> </value>
+    <value></value>
   </property>
   <property>
     <name>mapreduce.cluster.acls.enabled</name>

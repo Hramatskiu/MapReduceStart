@@ -2,37 +2,37 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>mapreduce-start</artifactId>
-        <groupId>com.epam</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
-
-    <artifactId>mapreduce-start-spark</artifactId>
+  <parent>
+    <artifactId>mapreduce-start</artifactId>
+    <groupId>com.epam</groupId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <modules>
-        <module>job</module>
-        <module>launcher</module>
-        <module>scala</module>
-    </modules>
+  <artifactId>mapreduce-start-spark</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-core_2.11</artifactId>
-                <version>${spark.version}</version>
-            </dependency>
-            <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-launcher_2.10 -->
-            <dependency>
-                <groupId>org.apache.spark</groupId>
-                <artifactId>spark-launcher_2.10</artifactId>
-                <version>${spark.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+  <modules>
+    <module>job</module>
+    <module>launcher</module>
+    <module>scala</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.spark</groupId>
+        <artifactId>spark-core_2.11</artifactId>
+        <version>${spark.version}</version>
+      </dependency>
+      <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-launcher_2.10 -->
+      <dependency>
+        <groupId>org.apache.spark</groupId>
+        <artifactId>spark-launcher_2.10</artifactId>
+        <version>${spark.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

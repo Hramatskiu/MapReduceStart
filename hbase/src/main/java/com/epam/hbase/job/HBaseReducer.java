@@ -11,12 +11,14 @@ import java.io.IOException;
 import java.util.stream.StreamSupport;
 
 public class HBaseReducer extends TableReducer<Text, IntWritable, ImmutableBytesWritable> {
-    @Override
-    protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-        int sum = StreamSupport.stream(values.spliterator(), false).map(IntWritable::get).reduce(Integer::sum).orElse(0);
+  @Override
+  protected void reduce( Text key, Iterable<IntWritable> values, Context context )
+    throws IOException, InterruptedException {
+    int sum =
+      StreamSupport.stream( values.spliterator(), false ).map( IntWritable::get ).reduce( Integer::sum ).orElse( 0 );
 
-        Put put = new Put(Bytes.toBytes(key.toString()));
-        put.addColumn(Bytes.toBytes("cpcount"), Bytes.toBytes("int"), Bytes.toBytes(sum));
-        context.write(null, put);
-    }
+    Put put = new Put( Bytes.toBytes( key.toString() ) );
+    put.addColumn( Bytes.toBytes( "cpcount" ), Bytes.toBytes( "int" ), Bytes.toBytes( sum ) );
+    context.write( null, put );
+  }
 }

@@ -1,8 +1,8 @@
-  <configuration>
-    
-    <property>
-      <name>sqoop.job.data.publish.class</name>
-      <value>org.apache.atlas.sqoop.hook.SqoopHook</value>
-    </property>
-    
-  </configuration>
+<configuration>
+
+  <property>
+    <name>sqoop.job.data.publish.class</name>
+    <value>org.apache.atlas.sqoop.hook.SqoopHook</value>
+  </property>
+
+</configuration>
