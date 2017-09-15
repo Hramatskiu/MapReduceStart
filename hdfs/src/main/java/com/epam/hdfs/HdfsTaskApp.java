@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HdfsTaskApp {
-  private static final String HDFS_URL = "hdfs://svqxbdcn6hdp25secn2.pentahoqa.com:8020";
+  private static final String HDFS_URL = "hdfs://svqxbdcn6hdp26secn1.pentahoqa.com:8020";
   private static final String WEB_HDFS_URL = "webhdfs://svqxbdcn6hdp25n1.pentahoqa.com:8020";
 
   public static void main( String[] args ) {
@@ -33,11 +33,12 @@ public class HdfsTaskApp {
 
     try ( FileSystem fileSystem = FileSystem.get( configuration ) ) {
       //copyToLocalFile("/wordcount/input/pg20417.txt", "D:/test_data/input.txt", fileSystem);
-      //copyFromLocal("D:/test_data/input.txt", "/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
+      copyFromLocal( "D:/test_data/input.txt", "/user/Stanislau_Hramatskiu/task/test.txt", fileSystem );
       //deleteFile("/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
-      fileSystem.mkdirs( new Path( "/wordcount/test" ) );
-      copyFromLocal( "D:/test_data/input.txt", "/wordcount/test/test.txt", fileSystem );
-      //FileStatus fileStatus = getFileStatus("/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
+      //fileSystem.mkdirs( new Path( "/wordcount/test" ) );
+      //copyFromLocal( "D:/test_data/input.txt", "/wordcount/test/test.txt", fileSystem );
+
+      FileStatus fileStatus = getFileStatus( "/user/Stanislau_Hramatskiu/task/test.txt", fileSystem );
       List<String> hostNames = getDataNodesHostNames( fileSystem );
       hostNames.forEach( System.out::println );
       //FSDataInputStream inputStream = readFile("/user/Stanislau_Hramatskiu/task/test.txt", fileSystem);
